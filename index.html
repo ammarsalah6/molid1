@@ -30,18 +30,32 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
-            padding-bottom: 80px; /* مساحة للقائمة العائمة بالأسفل */
+            padding-bottom: 90px; /* مساحة للقائمة العائمة بالأسفل */
             background-image: radial-gradient(circle at top right, #1a150e 0%, var(--bg-color) 60%);
         }
 
         /* الهيدر واللوجو */
         header {
             text-align: center;
-            padding: 40px 20px 20px;
+            padding: 30px 20px 20px;
+        }
+
+        .logo-wrapper {
+            margin-bottom: 15px;
+        }
+
+        .brand-logo-img {
+            max-width: 110px; /* يمكنك التحكم في حجم اللوجو من هنا */
+            height: auto;
+            border-radius: 50%;
+            object-fit: cover;
+            filter: drop-shadow(0 4px 15px var(--gold-glow));
+            border: 2px solid var(--gold-primary);
+            padding: 5px;
         }
 
         .brand-logo {
-            font-size: 32px;
+            font-size: 30px;
             font-weight: 900;
             color: var(--gold-primary);
             text-transform: uppercase;
@@ -52,20 +66,20 @@
 
         .brand-subtitle {
             color: var(--text-muted);
-            font-size: 14px;
+            font-size: 13px;
             letter-spacing: 1px;
         }
 
         /* شريط البحث والتصفية */
         .controls-container {
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto 30px;
             padding: 0 20px;
         }
 
         .search-wrapper {
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .search-input {
@@ -94,43 +108,55 @@
             font-size: 18px;
         }
 
-        /* أزرار التصنيفات */
+        /* أزرار التصنيفات بشكل عمودي */
         .categories-tabs {
             display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding: 5px 5px 10px;
-            scrollbar-width: none; /* لإخفاء شريط التمرير في فايرفوكس */
-        }
-
-        .categories-tabs::-webkit-scrollbar {
-            display: none; /* لإخفاء شريط التمرير في كروم */
+            flex-direction: column; /* تحويلها لعمودي */
+            gap: 12px;
         }
 
         .tab-btn {
-            padding: 10px 20px;
+            width: 100%;
+            padding: 15px 20px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 20px;
+            border-radius: 12px;
             color: var(--text-main);
-            white-space: nowrap;
+            font-size: 16px;
             cursor: pointer;
             font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             transition: all 0.3s ease;
         }
 
+        .tab-btn::after {
+            content: '\f105'; /* سهم خفيف جهة اليسار */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            transform: scaleX(-1); /* ليتناسب مع الاتجاه العربي */
+            color: var(--text-muted);
+            transition: transform 0.3s;
+        }
+
         .tab-btn.active, .tab-btn:hover {
-            background: var(--gold-primary);
+            background: linear-gradient(135deg, var(--gold-secondary), var(--gold-primary));
             color: #000;
             border-color: var(--gold-primary);
             font-weight: 700;
-            box-shadow: 0 4px 12px var(--gold-glow);
+            box-shadow: 0 4px 15px var(--gold-glow);
+        }
+
+        .tab-btn.active::after, .tab-btn:hover::after {
+            color: #000;
+            transform: scaleX(-1) translateX(5px);
         }
 
         /* شبكة المنتجات */
         .menu-container {
             max-width: 800px;
-            margin: 0 auto;
+            margin: 40px auto 0;
             padding: 0 20px;
             display: grid;
             grid-template-columns: 1fr;
@@ -271,7 +297,7 @@
             opacity: 1;
         }
 
-        /* شريط السوشيال ميديا السفلي العائم بلمسة عصرية */
+        /* شريط السوشيال ميديا السفلي */
         .social-bar {
             position: fixed;
             bottom: 20px;
@@ -299,18 +325,21 @@
             transform: scale(1.2);
         }
 
-        /* واجهة التحميل والأخطاء */
         .loading-status {
             text-align: center;
-            padding: 50px;
+            padding: 30px;
             color: var(--gold-primary);
-            font-size: 18px;
+            font-size: 16px;
+            grid-column: 1 / -1;
         }
     </style>
 </head>
 <body>
 
     <header>
+        <div class="logo-wrapper">
+            <img src="logo.png" alt="Jana Gold" class="brand-logo-img" onerror="this.style.display='none'">
+        </div>
         <div class="brand-logo">Jana Gold</div>
         <div class="brand-subtitle">فخامة الطعم وجودة الاختيار ✨</div>
     </header>
@@ -318,15 +347,16 @@
     <div class="controls-container">
         <div class="search-wrapper">
             <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن صنفك المفضل...">
+            <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن صنفك المفضل مباشرة...">
         </div>
+        
         <div class="categories-tabs" id="categoriesTabs">
-            <button class="tab-btn active" onclick="filterCategory('all')">الكل</button>
+            <button class="tab-btn" id="allTabBtn" onclick="filterCategory('all')">عرض كل الأصناف</button>
             </div>
     </div>
 
     <div class="menu-container" id="menuContainer">
-        <div class="loading-status">جاري تحميل منيو جانا جولد الفاخر...</div>
+        <div class="loading-status" style="color: var(--text-muted);">جاري الاتصال بقاعدة البيانات...</div>
     </div>
 
     <div class="toast" id="toast">تم نسخ تفاصيل الصنف بنجاح ✨</div>
@@ -338,37 +368,37 @@
     </div>
 
     <script>
-        // ضع رابط الـ CSV الخاص بـ Google Sheets الذي استخرجته هنا:
+        // ضع رابط الـ CSV الفعال الخاص بك هنا:
         const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGoyAsNR0JPLb2TQNSDI55YiWFCV0b5bRAmUTsWJxLvjCL_wA-NuoK2_OCCPggtjQ7eI_1JsXxvxlX/pub?output=csv'; 
 
         let menuData = [];
-        let currentCategory = 'all';
+        let currentCategory = 'initial'; // القيمة البداية تعني عدم عرض المنتجات حتى يضغط العميل
 
-        // دالة جلب البيانات من شيت جوجل
         async function fetchMenu() {
             try {
                 const response = await fetch(SHEET_CSV_URL);
-                const data = await response.text();
-                menuData = parseCSV(data);
+                const arrayBuffer = await response.arrayBuffer();
+                const decoder = new TextDecoder('utf-8');
+                const data = decoder.decode(arrayBuffer);
                 
+                if (data.trim().startsWith('<!DOCTYPE') || data.trim().startsWith('<html')) {
+                    throw new Error("رابط خاطئ! تأكد من نسخ رابط الـ CSV من خطوة النشر على الويب.");
+                }
+                
+                menuData = parseCSV(data);
                 renderCategories();
                 renderMenu();
             } catch (error) {
-                console.error("Error fetching sheet:", error);
-                document.getElementById('menuContainer').innerHTML = `<div class="loading-status" style="color:red;">عذراً، حدث خطأ في تحميل المنيو. يرجى التحقق من رابط الشيت.</div>`;
+                console.error("Error:", error);
+                document.getElementById('menuContainer').innerHTML = `<div class="loading-status" style="color:#ff6b6b;">تأكد من تطبيق خطوات النشر بصيغة CSV بنجاح.</div>`;
             }
         }
 
-        // دالة معالجة وتحويل نص CSV إلى مصفوفة كائنات كود مرنة
         function parseCSV(text) {
             const lines = text.split('\n');
             const result = [];
-            
-            // نفترض الترتيب: التصنيف، الصنف، العبوة، الوحدة، السعر
             for (let i = 1; i < lines.length; i++) {
                 if (!lines[i].trim()) continue;
-                
-                // التعامل مع الفواصل داخل النصوص بشكل مبسط
                 const currentLine = lines[i].split(',');
                 if(currentLine.length >= 5) {
                     result.push({
@@ -383,56 +413,78 @@
             return result;
         }
 
-        // توليد أزرار التصنيفات تلقائياً بناءً على البيانات المتوفرة في الشيت
         function renderCategories() {
             const tabsContainer = document.getElementById('categoriesTabs');
-            const categories = ['all', ...new Set(menuData.map(item => item.category))];
+            const uniqueCategories = [...new Set(menuData.map(item => item.category))];
             
-            tabsContainer.innerHTML = ''; // تفريغ
+            // نترك زر الكل الأساسي ونضيف البقية تحته عمودياً
+            tabsContainer.innerHTML = `<button class="tab-btn ${currentCategory === 'all' ? 'active' : ''}" onclick="filterCategory('all')">✨ عرض كل المنتجات المعروضة</button>`;
             
-            categories.forEach(cat => {
+            uniqueCategories.forEach(cat => {
                 const btn = document.createElement('button');
                 btn.className = `tab-btn ${cat === currentCategory ? 'active' : ''}`;
-                btn.textContent = cat === 'all' ? 'الكل' : cat;
+                btn.innerHTML = `<span><i class="fa-solid fa-folder-open" style="color:var(--gold-primary); margin-left:10px;"></i> ${cat}</span>`;
                 btn.onclick = () => {
-                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
                     filterCategory(cat);
                 };
                 tabsContainer.appendChild(btn);
             });
         }
 
-        // تصفية بحسب القسم
         function filterCategory(category) {
             currentCategory = category;
+            
+            // تحديث الاستايل النشط للأزرار
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                if(btn.textContent.includes(category) || (category === 'all' && btn.textContent.includes('كل المنتجات'))) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
             renderMenu();
+            
+            // حركة ذكية: الانتقال التلقائي لأسفل لرؤية الأصناف بعد الضغط (مريحة للهواتf)
+            if(category !== 'initial') {
+                document.getElementById('menuContainer').scrollIntoView({ behavior: 'smooth' });
+            }
         }
 
-        // دالة عرض عناصر المنيو في الصفحة
         function renderMenu() {
             const container = document.getElementById('menuContainer');
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             
             container.innerHTML = '';
             
+            // إذا كانت الصفحة في البداية ولم يكتب المستخدم شيئاً في البحث، نعرض رسالة توجيهية
+            if (currentCategory === 'initial' && !searchTerm) {
+                container.innerHTML = `<div class="loading-status" style="color: var(--text-muted); font-size:15px; border: 1px dashed var(--border-color); border-radius:12px; background:rgba(255,255,255,0.01)">👑 مرحباً بك في جانا جولد. فضلاً اختر قسماً من الأعلى لتصفح الأسعار والأصناف المتاحة.</div>`;
+                return;
+            }
+
+            // إذا كتب المستخدم في البحث، نتخطى وضع البداية ونبحث في كل البيانات تلقائياً
+            let activeCat = currentCategory;
+            if (searchTerm && currentCategory === 'initial') {
+                activeCat = 'all';
+            }
+
             const filtered = menuData.filter(item => {
-                const matchesCategory = currentCategory === 'all' || item.category === currentCategory;
+                const matchesCategory = activeCat === 'all' || item.category === activeCat;
                 const matchesSearch = item.name.toLowerCase().includes(searchTerm) || item.category.toLowerCase().includes(searchTerm);
                 return matchesCategory && matchesSearch;
             });
 
             if(filtered.length === 0) {
-                container.innerHTML = `<div class="loading-status" style="grid-column: 1/-1;">لم نجد أصنافاً تطابق بحثك..</div>`;
+                container.innerHTML = `<div class="loading-status" style="color: var(--text-muted);">لم نجد أصنافاً تطابق بحثك الحالي..</div>`;
                 return;
             }
 
             filtered.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'menu-item-card';
-                
-                // تجهيز نصوص المشاركة والنسخ
-                const shareText = `براند *Jana Gold* ✨\n*الصنف:* ${item.name}\n*التصنيف:* ${item.category}\n*العبوة:* ${item.packaging} (${item.unit})\n*السعر:* ${item.price} جنيه`;
+                const shareText = `براند *Jana Gold* ✨\n*الصنف:* ${item.name}\n*التصنيف:* ${item.category}\n*العبوة:* ${item.packaging} (${item.unit})\n*السعر:* ${item.price} ج.م`;
                 
                 card.innerHTML = `
                     <div>
@@ -461,26 +513,21 @@
             });
         }
 
-        // دالة نسخ تفاصيل الصنف بلمسة ذكية
         function copyItem(text) {
             navigator.clipboard.writeText(text).then(() => {
                 const toast = document.getElementById('toast');
                 toast.classList.add('show');
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 2500);
+                setTimeout(() => { toast.classList.remove('show'); }, 2500);
             });
         }
 
-        // دالة مساعدة لتفادي أخطاء النصوص المقبسة داخل أزرار الـ JavaScript
         function jsEscape(str) {
             return str.replace(/'/g, "\\'").replace(/\n/g, "\\n");
         }
 
-        // تفعيل البحث الفوري أثناء الكتابة
+        // تفعيل البحث الفوري والذكي
         document.getElementById('searchInput').addEventListener('input', renderMenu);
 
-        // بدء تشغيل وتغذية الصفحة بالبيانات بمجرد التحميل
         window.onload = fetchMenu;
     </script>
 </body>
